@@ -1,103 +1,59 @@
-from flask import Flask, render_template, url_for, request, redirect
+from flask import Flask, render_template, request
+
+app = Flask(__name__, template_folder='templates/')
+
+import yfinance as yf
+from datetime import date, timedelta
+today = date.today()
+start = today - timedelta(days=90)
+today = today.strftime('%Y-%m-%d')
+start = start.strftime('%Y-%m-%d')
+
+import numpy as np
 import pandas as pd
-import os
+n_code_list = pd.read_csv('n_code_list.csv', index_col=0)
 
-app = Flask(__name__)
-
-@app.route('/code', methods=['POST'])  # 用右上方搜尋連結stock code
-def get_post():
-   
-    # import os
-    global code
-    code = request.form.get('code')
-
-    filepath = "/data/{code}.csv"
-    directory = os.path.dirname(os.path.abspath(__file__))
-    filepath = f"{directory}/data/{code}.csv"
-    # temp = pd.read_csv(f"{directory}/data/{code}.csv")
-
-    if os.path.isfile(filepath):    
-        table_data = get_table_data()
-        labels = get_labels()
-        area_data1, area_data2 = get_area_data(code)
-        area_volume = get_volume_data(code)
-        bar_data, stock_name = get_bar_data(code)
-        pie_labels, pie_data = get_pie_data(code)
-        return render_template('charts.html', code=code, table_data=table_data, labels=labels, area_data1=area_data1, area_data2=area_data2, bar_data=bar_data, pie_labels=pie_labels, pie_data=pie_data, area_volume = area_volume)
-    else:
-        return render_template('404.html')
-  
-# 本次測試放大盤資料在首頁
-@app.route('/')
-def route():
-    # # global code
-    # code = '0050'
-    # table_data = get_table_data()
-    # labels = get_labels()
-    # tw_data = get_tw_data()
-    # area_data1, area_data2 = get_area_data(code)
-    # bar_data, stock_name = get_bar_data(code)
-    # pie_labels, pie_data = get_pie_data(code)
-    # return render_template('index.html',  table_data=table_data, labels=labels, area_data1=area_data1, area_data2=area_data2, bar_data=bar_data, stock_name=stock_name)
-    # return render_template('index.html', table_data=table_data, labels=labels, tw_data=tw_data, area_data1=area_data1, area_data2=area_data2, bar_data=bar_data, stock_name=stock_name)
-    return ("hello")
-@app.route('/base.html')
-def route_base():
-    global code
-    code = '0050'
-    table_data = get_table_data()
-    labels = get_labels()
-    # tw_data = get_tw_data()
-    # stock_name = stock_name()
-    area_data1, area_data2 = get_area_data(code)
-    bar_data, stock_name = get_bar_data(code)
-    pie_labels, pie_data = get_pie_data(code)
-    return render_template('base.html',  table_data=table_data, labels=labels, area_data1=area_data1, area_data2=area_data2, bar_data=bar_data, stock_name=stock_name)
+# from sklearn.preprocessing import MinMaxScaler
+# from keras.models import load_model
+# model = load_model('rnn_close_all_2011_0.8_300.h5')
+# model_1 = load_model('Model/rnn_close_1_300.h5')
+# model_1 = load_model('Model/rnn_close_2_300.h5')
+# model_1 = load_model('Model/rnn_close_3_300.h5')
+# model_1 = load_model('Model/rnn_close_4_300.h5')
+# model_1 = load_model('Model/rnn_close_5_300.h5')
 
 @app.route('/index.html')
-def index2():
-    global code
-    code = '0050'
-    table_data = get_table_data()
-    labels = get_labels()
-    tw_data = get_tw_data()
-    area_data1, area_data2 = get_area_data(code)
-    bar_data, stock_name = get_bar_data(code)
-    pie_labels, pie_data = get_pie_data(code)
-    return render_template('index.html',table_data=table_data, labels=labels, tw_data=tw_data, area_data1=area_data1, area_data2=area_data2, bar_data=bar_data, stock_name=stock_name)
+def index():
+    labels, area_data1, area_data2, bar_labels, bar_data = get_twii_data()
+    table_column, table_data = get_table_data()
+    return render_template('index.html', code='TWII', table_column=table_column, table_data=table_data, labels=labels, area_data1=area_data1, area_data2=area_data2, bar_labels=bar_labels, bar_data=bar_data)
 
-@app.route('/<code_req>') # 直接用下方的stock table連結
+@app.route('/index-code.html', methods=['POST'])
+def index_post():
+    global code
+    code = request.form.get('code')
+    labels, area_data1, area_data2, bar_data = get_data(code)
+    table_column, table_data = get_table_data()
+    return render_template('index-code.html', code=code, table_column=table_column, table_data=table_data, labels=labels, area_data1=area_data1, area_data2=area_data2, bar_data=bar_data)
+
+@app.route('/<code_req>')
 def index_code(code_req):
     global code
     code = code_req
-    table_data = get_table_data()
-    labels = get_labels()
-    area_data1, area_data2 = get_area_data(code)
-    area_volume = get_volume_data(code)
-    bar_data, stock_name = get_bar_data(code)
-    pie_labels, pie_data = get_pie_data(code)
-    return render_template('charts.html', code=code, table_data=table_data, labels=labels, area_data1=area_data1, area_data2=area_data2, bar_data=bar_data, pie_labels=pie_labels, pie_data=pie_data, area_volume=area_volume)
+    labels, area_data1, area_data2, bar_data = get_data(code)
+    table_column, table_data = get_table_data()
+    return render_template('index-code.html', code=code, table_column=table_column, table_data=table_data, labels=labels, area_data1=area_data1, area_data2=area_data2, bar_data=bar_data)
 
 @app.route('/charts.html')
 def charts():
-    global code
-    code = '0050'
-    table_data = get_table_data()
-    labels = get_labels()
-    area_data1, area_data2 = get_area_data(code)
-    area_volume = get_volume_data(code)
-    bar_data,stock_name = get_bar_data(code)
+    labels, area_data1, area_data2, bar_data = get_data(code)
     pie_labels, pie_data = get_pie_data(code)
-    return render_template('charts.html', code=code, table_data=table_data, labels=labels, area_data1=area_data1, area_data2=area_data2, bar_data=bar_data, pie_labels=pie_labels, pie_data=pie_data, area_volume=area_volume)
+    return render_template('charts.html', code=code, labels=labels, area_data1=area_data1, area_data2=area_data2, bar_data=bar_data, pie_labels=pie_labels, pie_data=pie_data)
 
 @app.route('/tables.html')
 def tables():
-    code = '2317'
-    table_data = get_table_data()
-    labels = get_labels()
-    area_data1, area_data2 = get_area_data(code)
-    bar_data = get_bar_data(code)
-    return render_template('tables.html', table_data=table_data, labels=labels, area_data1=area_data1, area_data2=area_data2, bar_data=bar_data)
+    table_column, table_data = get_table_data()
+    return render_template('tables.html', table_column=table_column, table_data=table_data)
 
 @app.route('/layout-sidenav-light.html')
 def layout_sidenav_light():
@@ -131,83 +87,103 @@ def E404():
 def E500():
     return render_template('500.html')
 
-def get_table_data():
-    table_data = [[145, "0050", 100.1, 100.2],
-                  [1203, "2330", 600.0, 601.0],
-                  [1025, "2317", 120.2, 117.9]]
-    return table_data
+@app.route('/HD.html')
+def test():
+    return render_template('HD.html')
 
-# 日期的部分未完成
-def get_labels():
-    # import  os
-    # import pandas as pd
-
-
-    # directory = os.path.dirname(os.path.abspath(__file__))
-    # temp = pd.read_csv(f"{directory}/data/{code}.csv")
-    # temp['date'] = temp['date'].dt.strftime('%m/%d/%Y')
-    # temp1 = str(temp['date'].astype(str), format='%m/%d/%Y')
+def get_twii_data():
+    # df = yf.Ticker('^TWII').history(start=start, end=today)
+    # for day in range(5):
+    #     df[f'{day+1}days_before_close'] = df['Close'].shift(periods=day+1)
     
-    # labels = ""
-    # labels = labels+str(temp["date"].to_list())[1:-1]  
-   
-    # 綱綱老師測試
-    # directory = os.path.dirname(os.path.abspath(__file__))
-    # temp = pd.read_csv(f"{directory}/data/0050.csv")
-    # labels = str(temp['date'].to_list()).replace("'","").replace("[","").replace("]","")
-    # 綱綱老師測試
-
+    # df = df.iloc[5:]
+    # df_model = df[['Open', 'High', 'Low', 'Close', f'1days_before_close', f'2days_before_close', f'3days_before_close', f'4days_before_close', f'5days_before_close']]
+    # data_all = pd.DataFrame(df_model.values.flatten())
+    # data_all = np.array(data_all).astype(float)
+    # scaler = MinMaxScaler()
+    # data_all = scaler.fit_transform(data_all)
+    # data = []
+    # sequence_length = len(df_model.columns) # Feature Number
+    # for i in range(int(len(data_all) / sequence_length)):
+    #     data.append(data_all[i*sequence_length:(i+1)*sequence_length])
+    # test_x = np.array(data).astype('float64')
+    # predict = model.predict(test_x)
+    # predict = np.reshape(predict, (predict.size, ))
+    # predict = scaler.inverse_transform([[i] for i in predict])
+    # area_data2 = predict
+    # labels = df.index.astype(str).str[:10].tolist()
+    # area_data1 = df['Close'].values.tolist()
+    # area_data2 = np.around(area_data2.flatten(), 1).tolist()
+    # df = pd.read_csv('Stock_Profile.csv', index_col=0)
+    # df = df[['Name', 'News size']]
+    # df = df.sort_values(by=['News size'], ascending=False)[:10]
+    # bar_labels = df['Name'].values.tolist()
+    # bar_data = df['News size'].values.tolist()
+    # labels = str(labels).replace("'", "").replace("[", "").replace("]", "")
+    # area_data1 = str(area_data1).replace("[", "").replace("]", "")
+    # area_data2 = str(area_data2).replace("[", "").replace("]", "")
+    # bar_labels = str(bar_labels).replace("'", "").replace("[", "").replace("]", "")
+    # bar_data = str(bar_data).replace("[", "").replace("]", "")
     labels = "2021-02-01, 2021-02-02, 2021-02-03, 2021-02-04, 2021-02-05, 2021-02-06, 2021-02-07, 2021-02-08, 2021-02-09, 2021-02-10, 2021-02-11, 2021-02-12, 2021-02-13, 2021-02-14, 2021-02-15, 2021-02-16, 2021-02-17, 2021-02-18, 2021-02-19, 2021-02-20"
-    return labels
+    area_data1 = "1000, 3012, 2623, 1894, 1887, 2868, 3127, 3329, 2584, 2419, 3261, 3184, 3851, 2623, 1894, 1887, 2868, 3127, 3329, 2584"
+    area_data2 = "1100, 2912, 2526, 1934, 1928, 2768, 3024, 3429, 2623, 1894, 1887, 2868, 3127, 3329, 2584"
+    bar_labels = "2021-02-01, 2021-02-02, 2021-02-03, 2021-02-04, 2021-02-05, 2021-02-06, 2021-02-07, 2021-02-08, 2021-02-09, 2021-02-10, 2021-02-11, 2021-02-12, 2021-02-13, 2021-02-14, 2021-02-15, 2021-02-16, 2021-02-17, 2021-02-18, 2021-02-19, 2021-02-20"
+    bar_data = "165, 144, 141, 125, 118, 113, 112, 111, 107, 101, 99"
+    return labels, area_data1, area_data2, bar_labels, bar_data
 
-
-# # 測試
-def get_area_data(code):  
-    import os
-    import pandas as pd
-
-    directory = os.path.dirname(os.path.abspath(__file__))
-    temp = pd.read_csv(f"{directory}/data/{code}.csv")
-    area_data1 = ""
-    # temp1 = temp['Open']
-    area_data1 = area_data1+str(temp['open'].to_list())[1:-1]
-
-    area_data2 = ""
-    area_data2 = area_data2+str(temp['close'].to_list())[1:-1]
+def get_data(code):
+    # df = yf.Ticker(str(code)+'.TW').history(start=start, end=today)
+    # if len(df) == 0:
+    #     df = yf.Ticker(str(code)+'.TWO').history(start=start, end=today)
+    #     if len(df) == 0:
+    #         pass
+    # for day in range(5):
+    #     df[f'{day+1}days_before_close'] = df['Close'].shift(periods=day+1)
     
-    return area_data1, area_data2
+    # df = df.iloc[5:]
+    # df_model = df[['Open', 'High', 'Low', 'Close', f'1days_before_close', f'2days_before_close', f'3days_before_close', f'4days_before_close', f'5days_before_close']]
+    # data_all = pd.DataFrame(df_model.values.flatten())
+    # data_all = np.array(data_all).astype(float)
+    # scaler = MinMaxScaler()
+    # data_all = scaler.fit_transform(data_all)
+    # data = []
+    # sequence_length = len(df_model.columns) # Feature Number
+    # for i in range(int(len(data_all) / sequence_length)):
+    #     data.append(data_all[i*sequence_length:(i+1)*sequence_length])
+    # test_x = np.array(data).astype('float64')
+    # predict = model.predict(test_x)
+    # predict = np.reshape(predict, (predict.size, ))
+    # predict = scaler.inverse_transform([[i] for i in predict])
+    # area_data2 = predict
+    # labels = df.index.astype(str).str[:10].tolist()
+    # area_data1 = df['Close'].values.tolist()
+    # area_data2 = np.around(area_data2.flatten(), 1).tolist()
+    # bar_data = df['Volume'].values.tolist()
+    # labels = str(labels).replace("'", "").replace("[", "").replace("]", "")
+    # area_data1 = str(area_data1).replace("[", "").replace("]", "")
+    # area_data2 = str(area_data2).replace("[", "").replace("]", "")
+    # bar_data = str(bar_data).replace("[", "").replace("]", "")
+    labels = "2021-02-01, 2021-02-02, 2021-02-03, 2021-02-04, 2021-02-05, 2021-02-06, 2021-02-07, 2021-02-08, 2021-02-09, 2021-02-10, 2021-02-11, 2021-02-12, 2021-02-13, 2021-02-14, 2021-02-15, 2021-02-16, 2021-02-17, 2021-02-18, 2021-02-19, 2021-02-20"
+    area_data1 = "1000, 3012, 2623, 1894, 1887, 2868, 3127, 3329, 2584, 2419, 3261, 3184, 3851, 2623, 1894, 1887, 2868, 3127, 3329, 2584"
+    area_data2 = "1100, 2912, 2526, 1934, 1928, 2768, 3024, 3429, 2623, 1894, 1887, 2868, 3127, 3329, 2584"
+    bar_data = "165, 144, 141, 125, 118, 113, 112, 111, 107, 101, 99"
+    return labels, area_data1, area_data2, bar_data
 
-# 2021/10/27 新增get_volume_data，將volume成交量除以1000，單位: 張
-def get_volume_data(code):  
-    # import os
-    # import pandas as pd
-
-    directory = os.path.dirname(os.path.abspath(__file__))
-    temp = pd.read_csv(f"{directory}/data/{code}.csv")
-    # area_volume = ""
-    temp1 = temp['volume']/1000  
-    area_volume = str(temp1.to_list())[1:-1]
-    # area_volume = "17090, 18770, 17789, 17298, 16097, 16739, 16823, 16028, 16923, 16833, 17234, 18374, 17305, 17434, 17509"
-    return area_volume
-
-# 大盤指數
-def get_tw_data():
-    tw_data = "17090, 18770, 17789, 17298, 16097, 16739, 16823, 16028, 16923, 16833, 17234, 18374, 17305, 17434, 17509"
-    return tw_data
-
-# 新聞討論度的股票
-def get_bar_data(code):
-    # bar_data = "300000, 512478, 374856, 276843, 184739, 437284, 346837, 512478, 374856, 276843, 184739, 437284, 512478, 374856, 276843"
-    # stock_name = "2330, 2317, 2454, 3008, 3711, 3481, 2344, 2409, 2308, 2881, 2882"
-    stock_name = "台積電, 鴻海, 聯發科, 大立光, 日月光, 群創, 華邦電, 友達, 台達電, 富邦金" 
-    bar_data = "165, 144, 141, 125, 118, 113, 112, 111, 107, 101"
-    return stock_name, bar_data
+def get_table_data():
+    df = pd.read_csv('Stock_Profile.csv')
+    df = df.iloc[: , :5]
+    table_column = df.columns.values.tolist()
+    table_data = df.values.tolist()
+    return table_column, table_data
 
 def get_pie_data(code):
-    pie_labels = "Blue, Red, Yellow, Green"
-    pie_data = "12.21, 15.58, 11.25, 8.32"
+    df = pd.read_csv('Stock_Profile.csv', index_col=0)
+    df = df.iloc[df.index == np.int64(code), 4:]
+    pie_labels = df.columns.values.tolist()
+    pie_data = df.values.flatten().tolist()
+    pie_labels = str(pie_labels).replace("'", "").replace("[", "").replace("]", "")
+    pie_data = str(pie_data).replace("[", "").replace("]", "")
     return pie_labels, pie_data
 
-
-if __name__=="__main__": 
-    app.run(debug=True) 
+if __name__=="__main__":
+    app.run(debug=True)

@@ -1,0 +1,1 @@
+-e "https://github.com/ddollar/heroku-buildpack-apt\nhttps://github.com/dwnld/heroku-buildpack-python3-sklearn" 

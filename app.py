@@ -23,11 +23,11 @@ models = [model_1, model_2, model_3, model_4, model_5]
 
 code = '2330'
 
-@app.route('/')
-def route():
-    labels, area_data1, area_data2, bar_labels, bar_data = get_twii_data()
-    table_column, table_data = get_table_data()
-    return render_template('index.html', code='TWII', table_column=table_column, table_data=table_data, labels=labels, area_data1=area_data1, area_data2=area_data2, bar_labels=bar_labels, bar_data=bar_data)
+# @app.route('/')
+# def route():
+#     labels, area_data1, area_data2, bar_labels, bar_data = get_twii_data()
+#     table_column, table_data = get_table_data()
+#     return render_template('index.html', code='TWII', table_column=table_column, table_data=table_data, labels=labels, area_data1=area_data1, area_data2=area_data2, bar_labels=bar_labels, bar_data=bar_data)
 
 
 @app.route('/yougood/index.html')

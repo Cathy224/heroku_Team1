@@ -21,7 +21,14 @@ model_4 = load_model('Model/rnn_close_4_300.h5')
 model_5 = load_model('Model/rnn_close_5_300.h5')
 models = [model_1, model_2, model_3, model_4, model_5]
 
-code = None
+code = '2330'
+
+@app.route('/')
+def route():
+    labels, area_data1, area_data2, bar_labels, bar_data = get_twii_data()
+    table_column, table_data = get_table_data()
+    return render_template('index.html', code='TWII', table_column=table_column, table_data=table_data, labels=labels, area_data1=area_data1, area_data2=area_data2, bar_labels=bar_labels, bar_data=bar_data)
+
 
 @app.route('/yougood/index.html')
 def index():
@@ -48,7 +55,7 @@ def index_code(code_req):
 @app.route('/yougood/charts.html')
 def charts():
     labels, area_data1, area_data2, bar_data = get_data(code)
-    pie_labels, pie_data = get_pie_data()
+    pie_labels, pie_data = get_pie_data(code)
     return render_template('charts.html', code=code, labels=labels, area_data1=area_data1, area_data2=area_data2, bar_data=bar_data, pie_labels=pie_labels, pie_data=pie_data)
 
 @app.route('/yougood/tables.html')
@@ -58,7 +65,6 @@ def tables():
 
 @app.route('/yougood/members.html')
 def members():
-    # table_column, table_data = get_table_data()
     return render_template('members.html')
 
 # @app.route('/layout-sidenav-light.html')
@@ -186,6 +192,7 @@ def get_data(code):
     area_data2 = np.around(area_data2.flatten(), 1).tolist()
     labels.pop(0)
     area_data1.pop(0)
+
     bar_data = df['Volume'].values.tolist()
     labels = str(labels).replace("'", "").replace("[", "").replace("]", "")
     area_data1 = str(area_data1).replace("[", "").replace("]", "")
@@ -204,7 +211,7 @@ def get_table_data():
     table_data = df.values.tolist()
     return table_column, table_data
 
-def get_pie_data():
+def get_pie_data(code):
     df = pd.read_csv('Stock_Profile.csv', index_col=0)
     df = df.iloc[df.index == code, 4:]
     pie_labels = df.columns.values.tolist()

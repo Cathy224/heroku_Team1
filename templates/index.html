@@ -26,14 +26,14 @@
         var area_data2 = '{{ area_data2 }}';
         area_data1 = area_data1.split(', ');
         area_data2 = area_data2.split(', ');
-        var area_min = Math.floor((Math.min.apply(Math, area_data1), Math.min.apply(Math, area_data2)) / 10) * 10;
-        var area_max = Math.ceil((Math.max.apply(Math, area_data1), Math.max.apply(Math, area_data2)) / 10) * 10;
+        var area_min = Math.floor(Math.min(Math.min.apply(Math, area_data1), Math.min.apply(Math, area_data2)) / 1000) * 1000;
+        var area_max = Math.ceil(Math.max(Math.max.apply(Math, area_data1), Math.max.apply(Math, area_data2)) / 1000) * 1000;
         // bar data
         var bar_labels = '{{ bar_labels }}';
         bar_labels = bar_labels.split(', ');
         var bar_data = '{{ bar_data }}';
         bar_data = bar_data.split(', ');
-        var bar_max = Math.ceil(Math.max.apply(Math, bar_data) / 10) * 10
+        var bar_max = Math.ceil(Math.max.apply(Math, bar_data) / 100) * 100
     </script>
 </head>
 
@@ -53,7 +53,7 @@
                         class="fas fa-search"></i></button>
             </div>
         </form> -->
-        <form method ="POST" action="/index-code.html" class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+        <form method ="POST" action="/yougood/index-code.html" class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
             <div class="input-group">
                 <input type="text" name ="code" class="form-control" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
                 <button class="btn btn-primary" id="btnNavbarSearch" type="submit"><i class="fas fa-search"></i></button>
@@ -93,6 +93,11 @@
                         <a class="nav-link" href="tables.html">
                             <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                             Tables
+                        </a>
+                        <div class="sb-sidenav-menu-heading">Profile</div>
+                        <a class="nav-link" href="members.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                            Members
                         </a>
                         <!-- <div class="sb-sidenav-menu-heading">Interface</div>
                         <a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
@@ -244,7 +249,7 @@
                                 </tfoot>
                                 <tbody>
                                     {% for row in table_data %}
-                                    <tr onclick="location.href=`/${'{{ row[0] }}'}`;">
+                                    <tr onclick="location.href=`/yougood/${'{{ row[0] }}'}`;">
                                         {% for data in row %}
                                         <td>{{ data }}</td>
                                         {% endfor %}

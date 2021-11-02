@@ -36,33 +36,35 @@ var myLineChart = new Chart(ctx, {
       pointBorderWidth: 2,
       data: area_data2,
     }],
-  },
-  options: {
-    scales: {
-      xAxes: [{
-        time: {
-          unit: 'date'
-        },
-        gridLines: {
+
+    options: {
+      scales: {
+        xAxes: [{
+          time: {
+            unit: 'date'
+          },
+          gridLines: {
+            display: false
+          },
+          ticks: {
+            maxTicksLimit: 10
+          }
+        }],
+        yAxes: [{
+          ticks: {
+            min: area_min,
+            max: area_max,
+            maxTicksLimit: 10
+          },
+          gridLines: {
+            color: "rgba(0, 0, 0, .125)",
+          }
+        }],
+
+        legend: {
           display: false
         },
-        ticks: {
-          maxTicksLimit: 10
-        }
-      }],
-      yAxes: [{
-        ticks: {
-          min: area_min,
-          max: area_max,
-          maxTicksLimit: 10
-        },
-        gridLines: {
-          color: "rgba(0, 0, 0, .125)",
-        }
-      }],
+      }
     },
-    legend: {
-      display: false
-    }
   }
-});
+})

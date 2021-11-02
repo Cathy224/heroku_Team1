@@ -32,7 +32,7 @@ var myLineChart = new Chart(ctx, {
         ticks: {
           min: 0,
           max: bar_max,
-          maxTicksLimit: 10
+          maxTicksLimit: 5
         },
         gridLines: {
           display: true

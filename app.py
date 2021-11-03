@@ -23,13 +23,6 @@ models = [model_1, model_2, model_3, model_4, model_5]
 
 code = '2330'
 
-# @app.route('/')
-# def route():
-#     labels, area_data1, area_data2, bar_labels, bar_data = get_twii_data()
-#     table_column, table_data = get_table_data()
-#     return render_template('index.html', code='TWII', table_column=table_column, table_data=table_data, labels=labels, area_data1=area_data1, area_data2=area_data2, bar_labels=bar_labels, bar_data=bar_data)
-
-
 @app.route('/yougood/index.html')
 def index():
     labels, area_data1, area_data2, bar_labels, bar_data = get_twii_data()
@@ -40,9 +33,9 @@ def index():
 def index_post():
     global code
     code = request.form.get('code')
-    labels, area_data1, area_data2, bar_data = get_data(code)
+    labels, area_data1, area_data2, bar_labels, bar_data = get_data(code)
     table_column, table_data = get_table_data()
-    return render_template('index-code.html', code=code, table_column=table_column, table_data=table_data, labels=labels, area_data1=area_data1, area_data2=area_data2, bar_data=bar_data)
+    return render_template('index-code.html', code=code, table_column=table_column, table_data=table_data, labels=labels, area_data1=area_data1, area_data2=area_data2, bar_labels=bar_labels, bar_data=bar_data)
 
 @app.route('/yougood/<code_req>')
 def index_code(code_req):
@@ -180,6 +173,7 @@ def get_data(code):
     predict = scaler.inverse_transform([[i] for i in predict])
     area_data2 = predict
     labels = df.index.astype(str).str[:10].tolist()
+    bar_labels = labels[:-5]
     area_data1 = df['Close'].values.tolist()
     for day in [1,2,3,4,5]:
         labels.append(f'{day} Days Predict')
@@ -197,12 +191,13 @@ def get_data(code):
     labels = str(labels).replace("'", "").replace("[", "").replace("]", "")
     area_data1 = str(area_data1).replace("[", "").replace("]", "")
     area_data2 = str(area_data2).replace("[", "").replace("]", "")
+    bar_labels = str(bar_labels).replace("'", "").replace("[", "").replace("]", "")
     bar_data = str(bar_data).replace("[", "").replace("]", "")
     # labels = "2021-02-01, 2021-02-02, 2021-02-03, 2021-02-04, 2021-02-05, 2021-02-06, 2021-02-07, 2021-02-08, 2021-02-09, 2021-02-10, 2021-02-11, 2021-02-12, 2021-02-13, 2021-02-14, 2021-02-15, 2021-02-16, 2021-02-17, 2021-02-18, 2021-02-19, 2021-02-20"
     # area_data1 = "1000, 3012, 2623, 1894, 1887, 2868, 3127, 3329, 2584, 2419, 3261, 3184, 3851, 2623, 1894, 1887, 2868, 3127, 3329, 2584"
     # area_data2 = "1100, 2912, 2526, 1934, 1928, 2768, 3024, 3429, 2623, 1894, 1887, 2868, 3127, 3329, 2584"
     # bar_data = "1650000, 1440000, 141000, 125000, 118000, 113000, 112000, 111000, 107000, 101000, 99000"
-    return labels, area_data1, area_data2, bar_data
+    return labels, area_data1, area_data2, bar_labels, bar_data
 
 def get_table_data():
     df = pd.read_csv('Stock_Profile.csv')

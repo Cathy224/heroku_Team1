@@ -5,7 +5,7 @@ app = Flask(__name__, template_folder='templates/')
 import yfinance as yf
 from datetime import date, timedelta
 today = date.today()
-start = today - timedelta(days=60)
+start = today - timedelta(days=90)
 today = today.strftime('%Y-%m-%d')
 start = start.strftime('%Y-%m-%d')
 

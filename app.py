@@ -23,6 +23,10 @@ models = [model_1, model_2, model_3, model_4, model_5]
 
 code = '2330'
 
+@app.route('/yougood/home.html')
+def home():
+    return render_template('home.html')
+
 @app.route('/yougood/index.html')
 def index():
     labels, area_data1, area_data2, bar_labels, bar_data = get_twii_data()
@@ -47,10 +51,10 @@ def index_code(code_req):
 
 @app.route('/yougood/charts.html')
 def charts():
-    labels, area_data1, area_data2, bar_data = get_data(code)
+    labels, area_data1, area_data2, bar_labels, bar_data = get_data(code)
     pie_labels, pie_data = get_pie_data(code)
-    return render_template('charts.html', code=code, labels=labels, area_data1=area_data1, area_data2=area_data2, bar_data=bar_data, pie_labels=pie_labels, pie_data=pie_data)
-
+    return render_template('charts.html', code=code, labels=labels, area_data1=area_data1, area_data2=area_data2, bar_labels=bar_labels, bar_data=bar_data, pie_labels=pie_labels, pie_data=pie_data)
+    
 @app.route('/yougood/tables.html')
 def tables():
     table_column, table_data = get_table_data()

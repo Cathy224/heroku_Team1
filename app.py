@@ -23,6 +23,7 @@ models = [model_1, model_2, model_3, model_4, model_5]
 
 code = '2330'
 
+
 @app.route('/yougood/home.html')
 def home():
     return render_template('home.html')
@@ -211,8 +212,8 @@ def get_table_data():
     return table_column, table_data
 
 def get_pie_data(code):
-    df = pd.read_csv('Stock_Profile.csv', index_col=0)
-    df = df.iloc[df.index == code, 4:]
+    df = pd.read_csv('Stock_Profile_Sentcount.csv', index_col=0)
+    df = df.iloc[df.index == code, 7:]
     pie_labels = df.columns.values.tolist()
     pie_data = df.values.flatten().tolist()
     pie_labels = str(pie_labels).replace("'", "").replace("[", "").replace("]", "")

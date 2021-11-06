@@ -10,7 +10,7 @@ var myPieChart = new Chart(ctx, {
     labels: pie_labels,
     datasets: [{
       data: pie_data,
-      backgroundColor: ['#007bff', '#dc3545', '#ffc107', '#28a745'],
+      backgroundColor: ['#1b8a19', '#7dbf7c', '#c3c7c7', '#d98080', '#de1010'],
       // backgroundColor: ['#28a745', '#007bff', '#FFCC00', '#FFA500', '	#FF8C69'],
     }],
   },

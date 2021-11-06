@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>Creative - Start Bootstrap Theme</title>
+        <title>YOU! GOOD!</title>
         <!-- Favicon-->
         <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
         <!-- Bootstrap Icons-->
@@ -16,6 +16,7 @@
         <!-- SimpleLightbox plugin CSS-->
         <link href="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.css" rel="stylesheet" />
         <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" />
         <link href="{{ url_for('static', filename='css/styles_home.css') }}" rel="stylesheet" />
     </head>
     <body id="page-top">
@@ -57,8 +58,8 @@
                         <h2 class="text-white mt-0">Introduction</h2>
                         <hr class="divider divider-light" />
                     </div>
-                    <div>
-                        <img src="{{ url_for('static', filename='assets/img/introduction.png') }}" width="100%" height="100%">
+                    <div class="card mb-4">
+                        <img src="{{ url_for('static', filename='assets/img/introduction.png') }}" width=100% height=100%>
                     </div>
                 </div>
             </div>
@@ -67,8 +68,8 @@
         <section class="page-section bg-dark text-white">
             <div class="container px-4 px-lg-5 text-center">
                 <h2 class="mb-4">Skill</h2>
-                <div>
-                    <img src="{{ url_for('static', filename='assets/img/skill.png') }}" width="100%" height="100%">
+                <div class="card mb-4">
+                    <img src="{{ url_for('static', filename='assets/img/skill.png') }}" width=100% height=100%>
                 </div>
             </div>
         </section>
@@ -81,6 +82,7 @@
         <!-- SimpleLightbox plugin JS-->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.js"></script>
         <!-- Core theme JS-->
+        <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
         <script src="{{ url_for('static', filename='js/scripts_home.js') }}"></script>
         <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
         <!-- * *                               SB Forms JS                               * *-->

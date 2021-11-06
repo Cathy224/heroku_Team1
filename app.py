@@ -219,5 +219,12 @@ def get_pie_data(code):
     pie_data = str(pie_data).replace("[", "").replace("]", "")
     return pie_labels, pie_data
 
+# def get_pie_data(code):
+#     pie_labels = "Positive, Slightly positive, None, Slightly negitive, Negitive"
+#     pie_data = "12.21, 15.58, 3.25, 8.32, 9.25"
+#     return pie_labels, pie_data
+
+
+
 if __name__=="__main__":
     app.run(debug=True)

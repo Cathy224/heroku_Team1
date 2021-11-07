@@ -46,9 +46,9 @@ def index_post():
 def index_code(code_req):
     global code
     code = code_req
-    labels, area_data1, area_data2, bar_data = get_data(code)
+    labels, area_data1, area_data2, bar_labels, bar_data = get_data(code)
     table_column, table_data = get_table_data()
-    return render_template('index-code.html', code=code, table_column=table_column, table_data=table_data, labels=labels, area_data1=area_data1, area_data2=area_data2, bar_data=bar_data)
+    return render_template('index-code.html', code=code, table_column=table_column, table_data=table_data, labels=labels, area_data1=area_data1, area_data2=area_data2, bar_labels=bar_labels, bar_data=bar_data)
 
 @app.route('/yougood/charts.html')
 def charts():

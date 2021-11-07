@@ -23,7 +23,6 @@ models = [model_1, model_2, model_3, model_4, model_5]
 
 code = '2330'
 
-
 @app.route('/yougood/home.html')
 def home():
     return render_template('home.html')
@@ -55,7 +54,7 @@ def charts():
     labels, area_data1, area_data2, bar_labels, bar_data = get_data(code)
     pie_labels, pie_data = get_pie_data(code)
     return render_template('charts.html', code=code, labels=labels, area_data1=area_data1, area_data2=area_data2, bar_labels=bar_labels, bar_data=bar_data, pie_labels=pie_labels, pie_data=pie_data)
-    
+
 @app.route('/yougood/tables.html')
 def tables():
     table_column, table_data = get_table_data()
@@ -100,17 +99,17 @@ def get_twii_data():
     labels.pop(0)
     area_data1.pop(0)
 
-    df = pd.read_csv('Stock_Profile.csv', index_col=0)
+    df = pd.read_csv('Stock_Profile_Sentcount.csv', index_col=0)
     df = df[['Name', 'News_size']]
     df = df.sort_values(by=['News_size'], ascending=False)[:10]
     bar_labels = df['Name'].values.tolist()
     bar_data = df['News_size'].values.tolist()
+
     labels = str(labels).replace("'", "").replace("[", "").replace("]", "")
     area_data1 = str(area_data1).replace("[", "").replace("]", "")
     area_data2 = str(area_data2).replace("[", "").replace("]", "")
     bar_labels = str(bar_labels).replace("'", "").replace("[", "").replace("]", "")
     bar_data = str(bar_data).replace("[", "").replace("]", "")
-    
     return labels, area_data1, area_data2, bar_labels, bar_data
 
 def get_data(code):
@@ -142,7 +141,6 @@ def get_data(code):
     predict = scaler.inverse_transform([[i] for i in predict])
     area_data2 = predict
     labels = df.index.astype(str).str[:10].tolist()
-    bar_labels = labels[:-5]
     area_data1 = df['Close'].values.tolist()
     for day in [1,2,3,4,5]:
         labels.append(f'{day} Days Predict')
@@ -155,18 +153,19 @@ def get_data(code):
     area_data2 = np.around(area_data2.flatten(), 1).tolist()
     labels.pop(0)
     area_data1.pop(0)
-
+    bar_labels = labels[:-5]
     bar_data = df['Volume'].values.tolist()
+    bar_data.pop(0)
+
     labels = str(labels).replace("'", "").replace("[", "").replace("]", "")
     area_data1 = str(area_data1).replace("[", "").replace("]", "")
     area_data2 = str(area_data2).replace("[", "").replace("]", "")
     bar_labels = str(bar_labels).replace("'", "").replace("[", "").replace("]", "")
     bar_data = str(bar_data).replace("[", "").replace("]", "")
-    
     return labels, area_data1, area_data2, bar_labels, bar_data
 
 def get_table_data():
-    df = pd.read_csv('Stock_Profile.csv')
+    df = pd.read_csv('Stock_Profile_Sentcount.csv')
     df = df.iloc[:50, :5]
     table_column = df.columns.values.tolist()
     table_data = df.values.tolist()

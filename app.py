@@ -65,38 +65,6 @@ def tables():
 def members():
     return render_template('members.html')
 
-# @app.route('/layout-sidenav-light.html')
-# def layout_sidenav_light():
-#     return render_template('layout-sidenav-light.html')
-
-# @app.route('/layout-static.html')
-# def layout_static():
-#     return render_template('layout-static.html')
-
-# @app.route('/login.html')
-# def login():
-#     return render_template('login.html')
-
-# @app.route('/password.html')
-# def password():
-#     return render_template('password.html')
-
-# @app.route('/register.html')
-# def register():
-#     return render_template('register.html')
-
-# @app.route('/401.html')
-# def E401():
-#     return render_template('401.html')
-
-# @app.route('/404.html')
-# def E404():
-#     return render_template('404.html')
-
-# @app.route('/500.html')
-# def E500():
-#     return render_template('500.html')
-
 def get_twii_data():
     df = yf.Ticker('^TWII').history(start=start, end=today)
     for day in [1,2,3,4,5,6]:
@@ -142,11 +110,7 @@ def get_twii_data():
     area_data2 = str(area_data2).replace("[", "").replace("]", "")
     bar_labels = str(bar_labels).replace("'", "").replace("[", "").replace("]", "")
     bar_data = str(bar_data).replace("[", "").replace("]", "")
-    # labels = "2021-02-01, 2021-02-02, 2021-02-03, 2021-02-04, 2021-02-05, 2021-02-06, 2021-02-07, 2021-02-08, 2021-02-09, 2021-02-10, 2021-02-11, 2021-02-12, 2021-02-13, 2021-02-14, 2021-02-15, 2021-02-16, 2021-02-17, 2021-02-18, 2021-02-19, 2021-02-20"
-    # area_data1 = "1000, 3012, 2623, 1894, 1887, 2868, 3127, 3329, 2584, 2419, 3261, 3184, 3851, 2623, 1894, 1887, 2868, 3127, 3329, 2584"
-    # area_data2 = "1100, 2912, 2526, 1934, 1928, 2768, 3024, 3429, 2623, 1894, 1887, 2868, 3127, 3329, 2584"
-    # bar_labels = "2021-02-01, 2021-02-02, 2021-02-03, 2021-02-04, 2021-02-05, 2021-02-06, 2021-02-07, 2021-02-08, 2021-02-09, 2021-02-10, 2021-02-11, 2021-02-12, 2021-02-13, 2021-02-14, 2021-02-15, 2021-02-16, 2021-02-17, 2021-02-18, 2021-02-19, 2021-02-20"
-    # bar_data = "1650000, 1440000, 141000, 125000, 118000, 113000, 112000, 111000, 107000, 101000, 99000"
+    
     return labels, area_data1, area_data2, bar_labels, bar_data
 
 def get_data(code):
@@ -198,10 +162,7 @@ def get_data(code):
     area_data2 = str(area_data2).replace("[", "").replace("]", "")
     bar_labels = str(bar_labels).replace("'", "").replace("[", "").replace("]", "")
     bar_data = str(bar_data).replace("[", "").replace("]", "")
-    # labels = "2021-02-01, 2021-02-02, 2021-02-03, 2021-02-04, 2021-02-05, 2021-02-06, 2021-02-07, 2021-02-08, 2021-02-09, 2021-02-10, 2021-02-11, 2021-02-12, 2021-02-13, 2021-02-14, 2021-02-15, 2021-02-16, 2021-02-17, 2021-02-18, 2021-02-19, 2021-02-20"
-    # area_data1 = "1000, 3012, 2623, 1894, 1887, 2868, 3127, 3329, 2584, 2419, 3261, 3184, 3851, 2623, 1894, 1887, 2868, 3127, 3329, 2584"
-    # area_data2 = "1100, 2912, 2526, 1934, 1928, 2768, 3024, 3429, 2623, 1894, 1887, 2868, 3127, 3329, 2584"
-    # bar_data = "1650000, 1440000, 141000, 125000, 118000, 113000, 112000, 111000, 107000, 101000, 99000"
+    
     return labels, area_data1, area_data2, bar_labels, bar_data
 
 def get_table_data():
@@ -219,13 +180,6 @@ def get_pie_data(code):
     pie_labels = str(pie_labels).replace("'", "").replace("[", "").replace("]", "")
     pie_data = str(pie_data).replace("[", "").replace("]", "")
     return pie_labels, pie_data
-
-# def get_pie_data(code):
-#     pie_labels = "Positive, Slightly positive, None, Slightly negitive, Negitive"
-#     pie_data = "12.21, 15.58, 3.25, 8.32, 9.25"
-#     return pie_labels, pie_data
-
-
 
 if __name__=="__main__":
     app.run(debug=True)
